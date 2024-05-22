@@ -1,5 +1,3 @@
-# To activate the virtual environment type .venv\scripts\activate
-
 import numpy as np
 import matplotlib.pyplot as plt
 from geometry import distance
@@ -8,7 +6,7 @@ from scipy.spatial.distance import euclidean
 from scipy.optimize import least_squares
 
 lx,ly = 60, 40  # afmeting van fabriekshal in lengte en breedte
-Nx,Ny = 10, 10  # aantal grid-punten langs lengte- en breedte-as
+Nx,Ny = 6, 4  # aantal grid-punten langs lengte- en breedte-as
 Nav = 20        # aantal middelingen in verband met meetruis
 
 # baken posities
@@ -40,7 +38,7 @@ estimation_errors = np.zeros((Nx, Ny))  # schattingsfouten (array van 6x4)
 # simulatie experimenten
 for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelheden ruis
     J = np.zeros((Nx,Ny))
-    print(exp)
+    print(f"Experiment {exp + 1} with noise {std_noise}")
     for ix,x in enumerate(x_list):  # loop alle gridpunten in x- 
         for iy,y in enumerate(y_list):  # en y-richting
             p = np.array([x,y])
@@ -53,10 +51,11 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
                 noisy_d = d + np.random.normal(0, std_noise, num_beacons)
                 
                 # schat positie op basis van trilateratie
-                pe = trilaterate_lstsq(beacon_positions,distances_measured)
+                pe = trilaterate_lstsq(beacon_positions, noisy_d)
                 
                 # bereken verschil in afstand tussen echte en geschatte positie
-                estimation_errors[ix, iy] = distance(p, estimated_positions[ix, iy])
+                estimated_positions[ix, iy] = pe
+                estimation_errors[ix, iy] = distance(p, pe)
 
                 # and average over Nav
                 J[ix,iy] += distance(p,pe)/Nav 
@@ -74,15 +73,23 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
 # print("Afstanden tot elk baken:", distances_to_beacons.shape)
 # print("Geschatte posities:", estimated_positions.shape)
 # print("Schattingsfouten:", estimation_errors.shape)
-# foute code stopt hier rest is weer goed met goede implementatie.
 
 # color grid representation
 plt.imshow(estimation_errors, extent=(0, lx, 0, ly), origin='lower')
-plt.colorbar(label='schattingsfout (m)')
-plt.xlabel('x (m)')
-plt.ylabel('y (m)')
-plt.title('schattingsfout over het grid')
-plt.savefig('plot'   '.png')
+plt.colorbar(label='Estimation Error (m)')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title('Estimation Error Over the Grid')
+plt.savefig('estimation_error_grid.png')
+# plt.show()
+
+# Plotting J_noise vs std_noise_list
+plt.plot(std_noise_list, J_noise, marker='o')
+plt.xlabel('Standard Deviation of Noise')
+plt.ylabel('Average Estimation Error')
+plt.title('Estimation Error vs Measurement Noise')
+plt.savefig('error_vs_noise.png')
+# plt.show()
 
 # Beantwoord de volgende vragen:
 
