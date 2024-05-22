@@ -8,7 +8,7 @@ from scipy.spatial.distance import euclidean
 from scipy.optimize import least_squares
 
 lx,ly = 60, 40  # afmeting van fabriekshal in lengte en breedte
-Nx,Ny = 6, 4  # aantal grid-punten langs lengte- en breedte-as
+Nx,Ny = 10, 10  # aantal grid-punten langs lengte- en breedte-as
 Nav = 20        # aantal middelingen in verband met meetruis
 
 # baken posities
@@ -40,6 +40,7 @@ estimation_errors = np.zeros((Nx, Ny))  # schattingsfouten (array van 6x4)
 # simulatie experimenten
 for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelheden ruis
     J = np.zeros((Nx,Ny))
+    print(exp)
     for ix,x in enumerate(x_list):  # loop alle gridpunten in x- 
         for iy,y in enumerate(y_list):  # en y-richting
             p = np.array([x,y])
@@ -69,38 +70,19 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
     # bepaal over alle punten op het grid de grootste schattingsfout
     J_noise[exp] = J.max() # j.max changed to j.mean for test
 
-# Maak een grafiek van J_noise versus std_noise_list 
-plt.figure()
-plt.plot(std_noise_list, J_noise, marker='o')
-plt.xlabel('Standaarddeviatie van de meetruis (m)')
-plt.ylabel('Gemiddelde schattingsfout (m)')
-plt.title('Gemiddelde schattingsfout als functie van de meetruis')
-plt.grid(True)
-plt.show()
-
-print(distances_to_beacons)
-
 # controleer de vorm van de arrays
-print("Afstanden tot elk baken:", distances_to_beacons.shape)
-print("Geschatte posities:", estimated_positions.shape)
-print("Schattingsfouten:", estimation_errors.shape)
+# print("Afstanden tot elk baken:", distances_to_beacons.shape)
+# print("Geschatte posities:", estimated_positions.shape)
+# print("Schattingsfouten:", estimation_errors.shape)
 # foute code stopt hier rest is weer goed met goede implementatie.
 
-# Maak een grafiek van J_noise versus std_noise_list 
-plt.plot(std_noise_list, J_noise)
-plt.xlabel('Standaard deviatie van meetruis')
-plt.ylabel('Grootste schattingsfout')
-plt.title('Invloed van meetruis op schattingsfout')
-plt.grid(True)
-plt.show()
-
 # color grid representation
-pls.imshow(estimation_errors, extent=(0, lx, 0, ly), origin='lower')
+plt.imshow(estimation_errors, extent=(0, lx, 0, ly), origin='lower')
 plt.colorbar(label='schattingsfout (m)')
 plt.xlabel('x (m)')
 plt.ylabel('y (m)')
 plt.title('schattingsfout over het grid')
-plt.show()
+plt.savefig('plot'   '.png')
 
 # Beantwoord de volgende vragen:
 
