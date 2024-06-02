@@ -52,13 +52,9 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
             
             # voer Nav experimenten om schattingsfout te middelen ivm meetruis
             for i in range(Nav):
-                # maak metingen door toevoegen van meetruis
-                noisy_d = d + np.random.normal(0, sigma, num_beacons)
+                noisy_d = d + np.random.normal(0, sigma, num_beacons) # maak metingen door toevoegen van meetruis
                 pe = trilaterate_lstsq(beacon_positions, noisy_d)
-                
-                # bereken verschil in afstand tussen echte en geschatte positie
-                estimated_positions[ix, iy] = pe
-                estimation_errors[ix, iy] = distance(p, pe)
+                estimation_error = distance(p, pe)
 
                 # and average over Nav
                 J[ix,iy] += distance(p,pe)/Nav 
