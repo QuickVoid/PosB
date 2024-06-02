@@ -96,13 +96,16 @@ plt.savefig('error_vs_noise.png')
 # 1) Wat is de waarde van de standaard deviatie van de meetruis
 #    zodat de afstand tussen de geschatte posities en echte posities
 #    kleiner dan 5 cm is?
+#    Antwoord: 0,005
 
 # 2) Ga na welke afstandssensoren op de markt toegepast kunnen worden in een
 #    indoor RTLS systeem met een bereik zoals nodig in deze opdracht en een
 #    nauwkeurigheid gevonden bij vraag 1.
+#    Antwoord: LIDAR (Light Detection and Ranging) Sensoren vb. Garmin LIDAR-Lite v3
 
 # 3) Ga na of je een kant en klaar RTLS systeem kunt vinden waarvan de specificaties
 #    in de buurt komen van wat nodig is in de toepassing van deze opdracht.
+#    Antwoord: Slamtec RPLIDAR A3, nauwkeurigheid binnen 1 cm & bereik Tot 25 meter.
 
 # Inleveren (via Blackboard) of tonen tijdens de les:
 # a) Code (bij voorkeur één python file in py of txt-file) met antwoorden op de vragen
