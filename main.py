@@ -1,3 +1,5 @@
+# To activate the virtual environment type .venv\scripts\activate
+
 import numpy as np
 import matplotlib.pyplot as plt
 from geometry import distance
