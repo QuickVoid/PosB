@@ -8,8 +8,9 @@ from scipy.spatial.distance import euclidean
 from scipy.optimize import least_squares
 
 lx,ly = 60, 40  # afmeting van fabriekshal in lengte en breedte
-Nx,Ny = 6, 4  # aantal grid-punten langs lengte- en breedte-as
+Nx,Ny = 6, 4    # aantal grid-punten langs lengte- en breedte-as
 Nav = 20        # aantal middelingen in verband met meetruis
+sigma = 0.01    # standaard deviation of noise in meter
 
 # baken posities
 beacon_positions = np.array([
@@ -50,7 +51,7 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
             # voer Nav experimenten om schattingsfout te middelen ivm meetruis
             for i in range(Nav):
                 # maak metingen door toevoegen van meetruis
-                noisy_d = d + np.random.normal(0, std_noise, num_beacons)
+                noisy_d = d + np.random.normal(0, sigma, num_beacons)
                 
                 # schat positie op basis van trilateratie
                 pe = trilaterate_lstsq(beacon_positions, noisy_d)
@@ -69,7 +70,7 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
                     distances_to_beacons[ix, iy, i] = distance(beacon_pos, p)
                     
     # bepaal over alle punten op het grid de grootste schattingsfout
-    J_noise[exp] = J.max() # j.max changed to j.mean for test
+    J_noise[exp] = J.max()
 
 # controleer de vorm van de arrays
 # print("Afstanden tot elk baken:", distances_to_beacons.shape)
