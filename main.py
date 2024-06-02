@@ -10,7 +10,7 @@ from scipy.optimize import least_squares
 lx,ly = 60, 40  # afmeting van fabriekshal in lengte en breedte
 Nx,Ny = 6, 4    # aantal grid-punten langs lengte- en breedte-as
 Nav = 20        # aantal middelingen in verband met meetruis
-sigma = 0.01    # standaard deviation of noise in meter
+sigma = 0.01    # standaard deviation voor noise in meter
 
 # baken posities
 beacon_positions = np.array([
@@ -28,7 +28,6 @@ distances_measured = np.array([
 # lijst met x-waarden en y-waarden, extra z-waarden
 x_list = np.linspace(0, lx, Nx)
 y_list = np.linspace(0, ly, Ny)
-# z_list = np.linspace(0, lz, Nz) # voor 3D opdracht
 
 std_noise_list = np.array([0.01, 0.02, 0.03, 0.04, 0.05, 0.08, 0.16, 0.32])
 J_noise = np.zeros(len(std_noise_list)) # array met schattingsfout
@@ -58,24 +57,17 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
 
                 # and average over Nav
                 J[ix,iy] += distance(p,pe)/Nav 
-            
                 p = np.array([ix * (lx / (Nx - 1)), iy * (ly / (Ny - 1))])  # bereken positie van meetpunt
         
                 # bereken afstand tot elk baken
                 for i, beacon_pos in enumerate(beacon_positions):
                     distances_to_beacons[ix, iy, i] = distance(beacon_pos, p)
 
-                
                 estimation_errors_exp.append(estimation_error)
             estimation_errors[ix, iy] = np.mean(estimation_errors_exp)
             distances_to_beacons[ix, iy] = d
     # bepaal over alle punten op het grid de grootste schattingsfout
     J_noise[exp] = J.max()
-
-# controleer de vorm van de arrays
-# print("Afstanden tot elk baken:", distances_to_beacons.shape)
-# print("Geschatte posities:", estimated_positions.shape)
-# print("Schattingsfouten:", estimation_errors.shape)
 
 # color grid representation
 plt.imshow(estimation_errors, extent=(0, lx, 0, ly), origin='lower')
