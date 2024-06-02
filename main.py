@@ -52,8 +52,6 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
             for i in range(Nav):
                 # maak metingen door toevoegen van meetruis
                 noisy_d = d + np.random.normal(0, sigma, num_beacons)
-                
-                # schat positie op basis van trilateratie
                 pe = trilaterate_lstsq(beacon_positions, noisy_d)
                 
                 # bereken verschil in afstand tussen echte en geschatte positie
@@ -68,7 +66,11 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
                 # bereken afstand tot elk baken
                 for i, beacon_pos in enumerate(beacon_positions):
                     distances_to_beacons[ix, iy, i] = distance(beacon_pos, p)
-                    
+
+                
+                estimation_errors_exp.append(estimation_error)
+            estimation_errors[ix, iy] = np.mean(estimation_errors_exp)
+            distances_to_beacons[ix, iy] = d
     # bepaal over alle punten op het grid de grootste schattingsfout
     J_noise[exp] = J.max()
 
@@ -94,12 +96,29 @@ plt.title('Estimation Error vs Measurement Noise')
 plt.savefig('error_vs_noise.png')
 plt.show()
 
+# Prepare data for 3D plot
+X, Y = np.meshgrid(x_list, y_list)
+Z = estimation_errors.T
+
+# Plotting the 3D wireframe
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+ax.plot_wireframe(X, Y, Z, color='blue')
+
+ax.set_xlabel('X Position')
+ax.set_ylabel('Y Position')
+ax.set_zlabel('Average Estimation Error (m)')
+ax.set_title('3D Wireframe Plot of Average Estimation Error')
+
+plt.savefig('3d_wireframe_plot.png')
+plt.show()
+
 # Beantwoord de volgende vragen:
 
 # 1) Wat is de waarde van de standaard deviatie van de meetruis
 #    zodat de afstand tussen de geschatte posities en echte posities
 #    kleiner dan 5 cm is?
-#    Antwoord: 0,005
+#    Antwoord: 0,02
 
 # 2) Ga na welke afstandssensoren op de markt toegepast kunnen worden in een
 #    indoor RTLS systeem met een bereik zoals nodig in deze opdracht en een
@@ -110,6 +129,18 @@ plt.show()
 #    in de buurt komen van wat nodig is in de toepassing van deze opdracht.
 #    Antwoord: Slamtec RPLIDAR A3, nauwkeurigheid binnen 1 cm & bereik Tot 25 meter.
 
-# Inleveren (via Blackboard) of tonen tijdens de les:
-# a) Code (bij voorkeur één python file in py of txt-file) met antwoorden op de vragen
-# b) Plaatje met grafiek van J_noise versus std_noise_list (png, svg of pdf)
+# 6) Ga na, of er gebieden zijn waar de schattingsfout kleiner is en waar deze groter is. 
+#    Zijn de bakenposities goed gekozen?
+#    Zo ja, waarom, en zo nee, hoe zou je de bakenposities willen aanpassen? Zo nodig, pas
+#    de baken posities aan.
+#    Antwoord: de baken posities zijn goed gekozen omdat het verschil van de schattingsfout zeer klein is met deze instellingen.
+#              Ik kan de grafiek alleen niet recht krijgen zonder de schattingsfout extreem groot te maken.
+
+# 8) Hoe nauwkeurig moeten de afstandsmetingen zijn om een gemiddelde
+#    schattingsfout van 5 cm of minder te krijgen
+#    Antwoord: 2cm
+
+# 9) Zoek een RTLS systeem of afstandssensoren die voldoen aan de eis om met 5 cm
+#    nauwkeurig posities te bepalen over het gebied van 40 m bij 60 m. Als je geen sys-
+#    teem kunt vinden, kies dan het systeem welke het beste aan de eisen voldoet.
+#    Antwoord: Velodyne Lidar, nauwkeurigheid ±3 cm & bereik tot 100 meter.
