@@ -83,7 +83,7 @@ plt.xlabel('x')
 plt.ylabel('y')
 plt.title('Estimation Error Over the Grid')
 plt.savefig('estimation_error_grid.png')
-# plt.show()
+plt.show()
 
 # Plotting J_noise vs std_noise_list
 plt.plot(std_noise_list, J_noise, marker='o')
@@ -91,7 +91,7 @@ plt.xlabel('Standard Deviation of Noise')
 plt.ylabel('Average Estimation Error')
 plt.title('Estimation Error vs Measurement Noise')
 plt.savefig('error_vs_noise.png')
-# plt.show()
+plt.show()
 
 # Beantwoord de volgende vragen:
 
