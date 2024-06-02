@@ -48,6 +48,8 @@ for exp,std_noise in enumerate(std_noise_list): # voor verschillende hoeveelhede
             # bereken afstand tot bakens
             d = np.array([distance(b,p) for b in beacon_positions]) 
 
+            estimation_errors_exp = []
+            
             # voer Nav experimenten om schattingsfout te middelen ivm meetruis
             for i in range(Nav):
                 # maak metingen door toevoegen van meetruis
